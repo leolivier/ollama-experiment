@@ -1,18 +1,22 @@
 import autogen
+# for access through litellm
+#BASE_URL="http://0.0.0.0:8000"
+# direct access to Ollama since 0.1.24, compatible with OpenAI /chat/completions
+BASE_URL="http://localhost:11434/v1"
 
 config_list_mistral = [
     {
-        'base_url': "http://0.0.0.0:8000",
+        'base_url': BASE_URL,
         'api_key': "fakekey",
-        'model': "ollama/mistral",
+        'model': "mistral:latest",
     }
 ]
 
 config_list_codellama = [
     {
-        'base_url': "http://0.0.0.0:8000",
+        'base_url': BASE_URL,
         'api_key': "fakekey",
-        'model': "ollama/codellama",
+        'model': "codellama:7b-code-q4_K_M",
     }
 ]
 
@@ -29,7 +33,7 @@ user_proxy = autogen.UserProxyAgent(
     human_input_mode="NEVER",
     max_consecutive_auto_reply=10,
     is_termination_msg=lambda x: x.get("content", "").rstrip().endswith("TERMINATE"),
-    code_execution_config={"work_dir": "web"},
+    code_execution_config={"work_dir": "web", "use_docker": False},
     llm_config=llm_config_mistral,
     system_message="""Reply TERMINATE if the task has been solved at full satisfaction.
 Otherwise, reply CONTINUE, or the reason why the task is not solved yet."""
